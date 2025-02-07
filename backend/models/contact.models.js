@@ -14,8 +14,12 @@ const schema = new mongoose.Schema(
       lowercase: true,
     },
     phone: {
-      type: Number,
+      type: String,
       required: [true, "Phone No is required"],
+    },
+    deleted: {
+      type: Boolean,
+      default: false,
     },
   },
   { timestamps: true }

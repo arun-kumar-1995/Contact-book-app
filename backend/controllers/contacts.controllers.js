@@ -2,37 +2,55 @@ import CatchAsyncError from "../utils/catchAsyncError.utils.js";
 import SendApiResponse from "../utils/responseHandler.utils.js";
 import Contact from "../models/contact.models.js";
 import ErrorHandler from "../utils/errorHandler.utils.js";
+import GetContacts from "../services/getContacts.services.js";
 
 const DEFAULT_PAGE = 1;
 const DEFAULT_PER_PAGE = 10;
 
 export const getContacts = CatchAsyncError(async (req, res, next) => {
-  let {
-    page = DEFAULT_PAGE,
-    perPage = DEFAULT_PER_PAGE,
-    search,
-    filter,
-    sort,
-  } = req.params;
+  let { page = DEFAULT_PAGE, perPage = DEFAULT_PER_PAGE } = req.params;
+
+  if (page) page = parseInt(page);
+  if (perPage) perPage = parseInt(perPage);
+  const limit = req.query.perPage || 10;
+
+  const contacts = new GetContacts(Contact.find(), req.query)
+    .search()
+    .filter()
+    .paginate();
+
+  const total = await new GetContacts(
+    Contact.find(),
+    req.query
+  ).getContactsCount();
+
+  const records = {
+    docs: [],
+    total,
+    page: req.query.page || 1,
+    limit,
+    pages: Math.ceil(total / limit),
+  };
+
+  records.docs = await contacts.query;
 
   return SendApiResponse(res, 200, "Here is your contact list", {
-    page,
-    perPage,
-    pages: totalPages,
-    total: totalRecords,
-    docs: transaction,
+    records,
   });
 });
 
 export const uploadContacts = CatchAsyncError(async (req, res, next) => {});
 
-export const createContact = CatchAsyncError(async (req, res, next) => {
-  const { name, email, phone } = req.body;
-  const contact = await Contact.create([{ name, email, phone }], { session });
+export const createContact = CatchAsyncError(
+  async (req, res, next, session) => {
+    const { name, email, phone } = req.body;
+    const contact = await Contact.create([{ name, email, phone }], { session });
 
-  // send resonse
-  SendApiResponse(res, 201, "Contact created successfully", { contact });
-}, true);
+    // send resonse
+    SendApiResponse(res, 201, "Contact created successfully", { contact });
+  },
+  true
+);
 
 export const deleteContact = CatchAsyncError(
   async (req, res, next, session) => {

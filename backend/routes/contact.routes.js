@@ -16,6 +16,6 @@ router
   .route("/:id")
   .put(validateUserInput, modifyContact)
   .delete(deleteContact);
-router.route("/create").post(validateUserInput, createContact);
+router.route("/new-contact").post(validateUserInput, createContact);
 
 export default router;
