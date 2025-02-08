@@ -39,7 +39,12 @@ export const getContacts = CatchAsyncError(async (req, res, next) => {
   });
 });
 
-export const uploadContacts = CatchAsyncError(async (req, res, next) => {});
+export const uploadContacts = CatchAsyncError(async (req, res, next) => {
+  if (!req.file) return ErrorHandler(res, 400, "No file choosen");
+
+  console.log(req.file);
+  SendApiResponse(res, 200, "Contacts uploaded");
+});
 
 export const createContact = CatchAsyncError(
   async (req, res, next, session) => {
@@ -55,7 +60,7 @@ export const createContact = CatchAsyncError(
 export const deleteContact = CatchAsyncError(
   async (req, res, next, session) => {
     const { id } = req.params;
-    if (!id) return next(ErrorHandler(res, 400, "Missing id parameter"));
+    if (!id) return ErrorHandler(res, 400, "Missing id parameter");
 
     const contact = await Contact.findById(id).session(session);
     if (!contact) return next(ErrorHandler(res, 404, "Contact not found."));

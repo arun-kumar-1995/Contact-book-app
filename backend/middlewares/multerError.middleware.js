@@ -1,5 +1,5 @@
 import multer from "multer";
-const uploadFileMiddleware = (err, req, res, next) => {
+const handleMulterError = (err, req, res, next) => {
   let statusCode = err.statusCode || 500;
   let errorMessage = err.message || "Internal Server Error";
 
@@ -24,4 +24,4 @@ const uploadFileMiddleware = (err, req, res, next) => {
   });
 };
 
-export default uploadFileMiddleware;
+export default handleMulterError;
