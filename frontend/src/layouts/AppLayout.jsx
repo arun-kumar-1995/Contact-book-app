@@ -1,8 +1,9 @@
-import { Sidenav } from "../components/Sidenav/Sidenav";
+import Sidebar from "../components/Sidenav/Sidebar";
+
 export const AppLayout = ({ children }) => {
   return (
     <>
-      <Sidenav />
+      <Sidebar />
       <main>{children}</main>
     </>
   );
