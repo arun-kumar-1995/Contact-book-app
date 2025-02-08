@@ -1,0 +1,32 @@
+.sidebar {
+  position: fixed;
+  width: 20rem;
+  height: 100vh;
+  background-color: var(--clr-dark);
+}
+
+.logo {
+  padding: 1.2rem;
+}
+
+h1 {
+  color: var(--clr-primary);
+  font-size: 2.4rem;
+}
+
+.sidebar nav {
+  width: 100%;
+  padding: 0 1.2rem;
+  margin-top: 2em;
+}
+
+.sidebar nav ul {
+  display: flex;
+  flex-direction: column;
+}
+.sidebar nav ul a {
+  display: block;
+  color: var(--clr-white);
+  font-size: 1.2rem;
+  text-transform: uppercase;
+}
