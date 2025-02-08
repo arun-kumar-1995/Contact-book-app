@@ -8,7 +8,14 @@ export const AppLayout = ({ children }) => {
       }}
     >
       <Sidebar />
-      <main>{children}</main>
+      <main
+        style={{
+          marginLeft: "20rem",
+          width: "100%",
+        }}
+      >
+        {children}
+      </main>
     </div>
   );
 };
