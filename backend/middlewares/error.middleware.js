@@ -24,6 +24,10 @@ const errorMiddleware = (err, req, res, next) => {
       const fieldNames = Object.values(err.errors).map((err) => err.path);
       errorMessage = `${fieldNames.join(", ")} is required.`;
     }
+
+    if (err instanceof multer.MulterError) {
+      
+    }
     // return the json response
     return res.status(statusCode).json({
       success: false,
