@@ -22,9 +22,9 @@ class GetContacts {
     return this;
   }
 
-  filter() {
+  sort() {
     const query = {};
-    if (this.queryStr?.filterBy === "recent-added")
+    if (this.queryStr?.filterBy === "recent")
       this.query.sort({ _id: -1 });
 
     if (this.queryStr?.filterBy === "oldest") this.query.sort({ _id: 1 });

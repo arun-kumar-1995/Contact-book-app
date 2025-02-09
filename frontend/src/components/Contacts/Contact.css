@@ -1,3 +1,44 @@
+.contact-controls {
+  display: flex;
+  align-items: center;
+  gap: 2em;
+  margin: 0 2em;
+}
+
+.contact-controls button {
+  font-size: 1.2rem;
+  padding: 0.8rem 1.6rem;
+  border-radius: 2rem;
+  transition: background-color 0.24s ease;
+}
+
+button.selected-contact {
+  border: 1px solid #d9d9d9;
+  color: var(--clr-success);
+}
+button.selected-contact:hover {
+  background-color: var(--clr-success);
+  color: var(--clr-light);
+}
+button.delete-contact {
+  color: var(--clr-danger);
+  border: 1px solid var(--clr-danger);
+}
+
+button.delete-contact:hover {
+  background-color: var(--clr-danger);
+  color: var(--clr-light);
+}
+
+button.export-contacts {
+  color: var(--clr-dark);
+  border: 1px solid var(--clr-dark);
+}
+button.export-contacts:hover {
+  background-color: var(--clr-dark);
+  color: var(--clr-light);
+}
+
 table {
   width: 96%;
   margin: 0 2%;

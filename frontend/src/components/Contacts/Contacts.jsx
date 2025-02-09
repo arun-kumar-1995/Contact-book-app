@@ -3,12 +3,23 @@ import "./Contact.css";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 const perPageOptions = [10, 20, 50, 100];
 import { Link } from "react-router-dom";
-import { MdPhoneAndroid, MdOutlineFemale, MdOutlineMale  , MdOutlineEmail} from "react-icons/md";
+import {
+  MdPhoneAndroid,
+  MdOutlineFemale,
+  MdOutlineMale,
+  MdOutlineEmail,
+} from "react-icons/md";
 
 const Contacts = () => {
   return (
     <div>
       <Header />
+      <div className="contact-controls">
+        <button className="selected-contact">2 Selected</button>
+        <button className="delete-contact"> Delete: 2 </button>
+        <button className="export-contacts">Export selected</button>
+      </div>
+
       <table>
         <thead>
           <tr>
@@ -24,7 +35,10 @@ const Contacts = () => {
           <tr>
             <th>#1</th>
             <th>Arun Kumar</th>
-            <th><MdOutlineEmail />arun.devpro@gmail.com</th>
+            <th>
+              <MdOutlineEmail />
+              arun.devpro@gmail.com
+            </th>
             <th>
               <MdOutlineFemale /> Female
             </th>

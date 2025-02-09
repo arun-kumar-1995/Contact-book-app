@@ -16,7 +16,7 @@ export const getContacts = CatchAsyncError(async (req, res, next) => {
 
   const contacts = new GetContacts(Contact.find(), req.query)
     .search()
-    .filter()
+    .sort()
     .paginate();
 
   const total = await new GetContacts(
