@@ -21,8 +21,11 @@ router
   .route("/:id")
   .put(validateUserInput, modifyContact)
   .delete(deleteContact);
+
 router.route("/new-contact").post(validateUserInput, createContact);
 
-router.route("/deete-contacts").delete(deleteMultipleContact);
+router.route("/delete-contacts").delete(deleteMultipleContact);
+
+router.route("/contact-details").get(getContactDetails);
 
 export default router;

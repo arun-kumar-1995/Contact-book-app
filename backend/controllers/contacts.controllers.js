@@ -104,3 +104,10 @@ export const deleteMultipleContact = CatchAsyncError(async (req, res, next) => {
 
   SendApiResponse(res, 200, "Contacts deleted successfully.");
 });
+
+export const getContactDetails = CatchAsyncError(async (req, res, next) => {
+  const contact = await Contact.findById(req.params.id);
+  if (!contact) return ErrorHandler(res, 400, "Contact details not found.");
+
+  SendApiResponse(res, 200, "Here is contact details", { details: contact });
+});
