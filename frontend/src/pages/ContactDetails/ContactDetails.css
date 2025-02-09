@@ -58,13 +58,16 @@
   margin-right: 0.4em;
 }
 
-.btn-delete {
+.card-control .btn-delete {
   color: var(--clr-danger);
 }
-.btn-edit {
+.card-control .btn-edit {
   color: var(--clr-success);
 }
+.card-control .btn-edit:hover {
+  border: 1px solid var(--clr-success);
+}
 
-.btn-delete:hover {
+.card-control .btn-delete:hover {
   border: 1px solid var(--clr-danger);
 }

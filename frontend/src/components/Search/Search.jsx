@@ -3,7 +3,7 @@ import "./Search.css";
 const Search = () => {
   return (
     <div className="search">
-      <input type="text" placeholder="What are your searching for ?" />
+      <input type="text" placeholder="Phonebook search.." />
 
       <select name="search" id="search-opton">
         <option value="name">Name</option>

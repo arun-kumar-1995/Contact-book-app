@@ -15,7 +15,8 @@ const Contacts = () => {
     <div>
       <Header />
       <div className="contact-controls">
-        <button className="selected-contact">2 Selected</button>
+        <button className="selected-contact">
+        2 Selected</button>
         <button className="delete-contact"> Delete: 2 </button>
         <button className="export-contacts">Export selected</button>
       </div>

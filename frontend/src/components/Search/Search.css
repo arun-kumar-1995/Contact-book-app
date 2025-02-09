@@ -1,7 +1,7 @@
 .search {
-  border-radius: 2rem;
+  border-radius: 0.8rem;
   border: 1px solid #d9d9d9;
-  width: 38rem;
+  width: 40rem;
   padding: 1rem 1.4rem;
   position: relative;
 }
