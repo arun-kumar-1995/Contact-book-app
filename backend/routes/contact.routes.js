@@ -5,6 +5,7 @@ import {
   deleteContact,
   modifyContact,
   createContact,
+  deleteMultipleContact,
 } from "../controllers/contacts.controllers.js";
 import { validateUserInput } from "../middlewares/validateUserInput.middleware.js";
 import uploads from "../configs/multer.configs.js";
@@ -21,5 +22,7 @@ router
   .put(validateUserInput, modifyContact)
   .delete(deleteContact);
 router.route("/new-contact").post(validateUserInput, createContact);
+
+router.route("/deete-contacts").delete(deleteMultipleContact);
 
 export default router;

@@ -7,7 +7,7 @@ class GetContacts {
   search() {
     const searchQuery = { deleted: false };
     if (this.queryStr.name)
-      searchQuery.name = { $regex: this.queryStr.search, $options: "i" };
+      searchQuery.name = { $regex: this.queryStr.name, $options: "i" };
 
     if (this.queryStr.email)
       searchQuery.email = { $regex: this.queryStr.email, $options: "i" };
@@ -19,22 +19,6 @@ class GetContacts {
       };
 
     this.query = this.query.find(searchQuery);
-    return this;
-  }
-
-  sort() {
-    const query = {};
-    if (this.queryStr?.filterBy === "recent")
-      this.query.sort({ _id: -1 });
-
-    if (this.queryStr?.filterBy === "oldest") this.query.sort({ _id: 1 });
-    if (this.queryStr?.filterBy === "date") this.query.sort({ createdAt: -1 });
-
-    this.query.find({
-      ...this.queryStr,
-      ...query,
-    });
-
     return this;
   }
 
@@ -56,6 +40,13 @@ class GetContacts {
     });
 
     return count;
+  }
+
+  sort() {
+    if (this.queryStr?.filterBy === "recent") this.query.sort({ _id: -1 });
+    if (this.queryStr?.filterBy === "oldest") this.query.sort({ _id: 1 });
+    if (this.queryStr?.filterBy === "date") this.query.sort({ createdAt: -1 });
+    return this;
   }
 
   paginate() {

@@ -9,21 +9,20 @@ const DEFAULT_PAGE = 1;
 const DEFAULT_PER_PAGE = 10;
 
 export const getContacts = CatchAsyncError(async (req, res, next) => {
-  let { page = DEFAULT_PAGE, perPage = DEFAULT_PER_PAGE } = req.params;
+  let { page = DEFAULT_PAGE, perPage = DEFAULT_PER_PAGE } = req.query;
 
   if (page) page = parseInt(page);
   if (perPage) perPage = parseInt(perPage);
-  const limit = req.query.perPage || 10;
 
-  const contacts = new GetContacts(Contact.find(), req.query)
+  const limit = req.query.perPage || 10;
+  console.log(req.query);
+
+  const contactsQuery = new GetContacts(Contact.find(), req.query)
     .search()
     .sort()
     .paginate();
 
-  const total = await new GetContacts(
-    Contact.find(),
-    req.query
-  ).getContactsCount();
+  const total = new GetContacts(Contact.find(), req.query).getContactsCount();
 
   const records = {
     docs: [],
@@ -33,10 +32,10 @@ export const getContacts = CatchAsyncError(async (req, res, next) => {
     pages: Math.ceil(total / limit),
   };
 
-  records.docs = await contacts.query;
+  records.docs = await contactsQuery.query;
 
   return SendApiResponse(res, 200, "Here is your contact list", {
-    records,
+    contacts: records,
   });
 });
 
@@ -90,3 +89,18 @@ export const modifyContact = CatchAsyncError(
   },
   true
 );
+
+export const deleteMultipleContact = CatchAsyncError(async (req, res, next) => {
+  const { contactIds } = req.body;
+
+  if (!!Array.isArray(contactIds)) {
+    return ErrorHandler(res, 400, "Contact IDs must be an array");
+  }
+
+  if (!contactIds || contactIds.length === 0) {
+    return ErrorHandler(res, 400, "Invalid contact IDs.");
+  }
+  await Contact.deleteMany({ _id: { $in: contactIds } });
+
+  SendApiResponse(res, 200, "Contacts deleted successfully.");
+});
