@@ -9,7 +9,7 @@
   padding: 20px;
   border-radius: 10px;
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-  width: 320px;
+  width: 32rem;
   text-align: center;
 }
 
@@ -38,4 +38,33 @@
 .contact-card span {
   font-weight: bold;
   color: #000;
+}
+
+.card-control {
+  display: flex;
+  justify-content: space-between;
+  width: 32rem;
+  margin: 0 auto;
+  margin-top: 3.2em;
+}
+.btn-control {
+  font-size: 1.4rem;
+  padding: 0.8rem 1.6rem;
+  border: 1px solid #d9d9d9;
+  width: 100%;
+}
+.btn-control svg {
+  font-size: 1.6rem;
+  margin-right: 0.4em;
+}
+
+.btn-delete {
+  color: var(--clr-danger);
+}
+.btn-edit {
+  color: var(--clr-success);
+}
+
+.btn-delete:hover {
+  border: 1px solid var(--clr-danger);
 }
