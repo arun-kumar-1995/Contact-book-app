@@ -3,6 +3,7 @@ import SendApiResponse from "../utils/responseHandler.utils.js";
 import Contact from "../models/contact.models.js";
 import ErrorHandler from "../utils/errorHandler.utils.js";
 import GetContacts from "../services/getContacts.services.js";
+import { ContactsUploader } from "../utils/contactsUploader.utils.js";
 
 const DEFAULT_PAGE = 1;
 const DEFAULT_PER_PAGE = 10;
@@ -41,8 +42,8 @@ export const getContacts = CatchAsyncError(async (req, res, next) => {
 
 export const uploadContacts = CatchAsyncError(async (req, res, next) => {
   if (!req.file) return ErrorHandler(res, 400, "No file choosen");
-
-  console.log(req.file);
+  const contacts = await ContactsUploader(req.file);
+  await Contact.insertMany(contacts);
   SendApiResponse(res, 200, "Contacts uploaded");
 });
 

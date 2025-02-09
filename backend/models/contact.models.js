@@ -17,6 +17,9 @@ const schema = new mongoose.Schema(
       type: String,
       required: [true, "Phone No is required"],
     },
+    gender: {
+      type: String,
+    },
     deleted: {
       type: Boolean,
       default: false,
