@@ -1,0 +1,41 @@
+.page-header {
+  padding: 1.2rem 1.6rem;
+  background-color: #f5f5f5;
+}
+
+.contact-card {
+  margin-top: 3.2em;
+  background: #fff;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+  width: 320px;
+  text-align: center;
+}
+
+.contact-card img {
+  width: 12rem;
+  height: 12rem;
+  border-radius: 50%;
+  object-fit: cover;
+  margin: 0 auto;
+  border: 1px solid #ccc;
+}
+
+.contact-card h2 {
+  font-size: 2.4rem;
+  color: var(--clr-dark);
+  margin: 0.8em 0;
+}
+
+.contact-card p {
+  font-size: 1.4rem;
+  color: #545454;
+  margin: 0.4em 0;
+  text-align: left;
+}
+
+.contact-card span {
+  font-weight: bold;
+  color: #000;
+}
