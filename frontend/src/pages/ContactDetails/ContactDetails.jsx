@@ -2,6 +2,8 @@ import { Layout } from "../../hoc/Layout";
 import "./ContactDetails.css";
 import { FaTrashCan } from "react-icons/fa6";
 import { FaRegEdit } from "react-icons/fa";
+// import user from "/assets/user.jpg";
+
 const ContactDetails = () => {
   return (
     <center>
@@ -22,16 +24,16 @@ const ContactDetails = () => {
           <span>Gender:</span> Male
         </p>
       </div>
-        <div className="card-control">
-          <button type="button" className="btn-control btn-edit">
-            <FaRegEdit />
-            Edit
-          </button>
-          <button type="button" className="btn-control btn-delete">
-            <FaTrashCan />
-            Delete
-          </button>
-        </div>
+      <div className="card-control">
+        <button type="button" className="btn-control btn-edit">
+          <FaRegEdit />
+          Edit
+        </button>
+        <button type="button" className="btn-control btn-delete">
+          <FaTrashCan />
+          Delete
+        </button>
+      </div>
     </center>
   );
 };
