@@ -47,7 +47,7 @@ const ContactDetails = () => {
       setIsLoading(false);
     }
   };
-
+  console.log(formData);
   const handleEdit = async () => {
     try {
       const response = await API.put(
@@ -61,9 +61,10 @@ const ContactDetails = () => {
         toast.success("Contact updated successfully!");
         setContactDetails(response.data.data);
         closeModal();
+        getContactDetails();
       }
     } catch (err) {
-      toast.error(err.message);
+      toast.error(err?.response?.data?.message || err.message);
     }
   };
 

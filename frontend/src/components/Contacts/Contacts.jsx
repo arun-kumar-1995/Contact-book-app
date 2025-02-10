@@ -108,6 +108,25 @@ const Contacts = () => {
     }
   };
 
+  const handleBulkDelete = async () => {
+    try {
+      const response = await API.post(
+        `/app/v1/contacts/delete-contacts`,
+        { contactIds: selectedRows },
+        {
+          headers: { "Content-Type": "application/json" },
+        }
+      );
+      if (response.status === 200) {
+        toast.success("Selected contact deleted");
+        fetchContacts();
+      }
+    } catch (err) {
+      console.log(err);
+      toast.error(err?.response?.data?.message || err.message);
+    }
+  };
+
   return (
     <div>
       <Header onSearch={handleSearch} onFilter={handleFilter} />;
@@ -116,8 +135,8 @@ const Contacts = () => {
           <button className="selected-contact">
             {selectedRows.length} Selected
           </button>
-          <button className="delete-contact">
-            Delete: {selectedRows.length}{" "}
+          <button className="delete-contact" onClick={handleBulkDelete}>
+            Delete: {selectedRows.length}
           </button>
           <button className="export-contacts">Export selected</button>
         </div>

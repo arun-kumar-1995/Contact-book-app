@@ -77,6 +77,7 @@ export const modifyContact = CatchAsyncError(
     const { id } = req.params
     const { name, email, phone } = req.body
     console.log(id, req.body)
+
     if (!id) return ErrorHandler(res, 404, 'Missing id parameter.')
     const contact = await Contact.findByIdAndUpdate(
       id,
@@ -93,7 +94,7 @@ export const modifyContact = CatchAsyncError(
 export const deleteMultipleContact = CatchAsyncError(async (req, res, next) => {
   const { contactIds } = req.body
 
-  if (!!Array.isArray(contactIds)) {
+  if (!Array.isArray(contactIds)) {
     return ErrorHandler(res, 400, 'Contact IDs must be an array')
   }
 
