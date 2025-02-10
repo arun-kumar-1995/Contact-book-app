@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
-
-import Header from "../Header/Header";
-import "./Contact.css";
+import { API } from "../../axios/apiWrapper";
+import { useToast } from "../../contexts/ToastContext";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import {
@@ -10,62 +9,119 @@ import {
   MdOutlineMale,
   MdOutlineEmail,
 } from "react-icons/md";
-import { API } from "../../axios/apiWrapper";
-import { useToast } from "../../contexts/ToastContext";
+import Header from "../Header/Header";
+import "./Contact.css";
+import QueryBuilder from "../../utils/queryBuilder";
 
 const perPageOptions = [10, 20, 50, 100];
 
 const Contacts = () => {
-  const [contacts, setContacts] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [page, setPage] = useState(1);
-  const [perPage, setPerPage] = useState(10);
-  const [totalRecords, setTotalRecords] = useState(0);
-  const [search, setSearch] = useState({ name: "", phone: "", email: "" });
-  const [filter, setFilter] = useState({ filterBy: "" });
+  const [pageData, setPageData] = useState({
+    page: 1,
+    perPage: 10,
+    pages: 1,
+    total: 0,
+    docs: [],
+  });
+
+  const [hoveredRow, setHoveredRow] = useState(null);
+  const [selectedRows, setSelectedRows] = useState([]);
+  const [search, setSearch] = useState({ type: "name", query: "" });
+  const [filter, setFilter] = useState({ type: "filterBy", query: "" });
 
   const toast = useToast();
 
+  const getQuery = () => {
+    return QueryBuilder(
+      "/app/v1/contacts?",
+      pageData.page,
+      pageData.perPage,
+      search.query
+        ? { [search.type]: search.query }
+        : filter.query
+        ? { [filter.type]: filter.query }
+        : {}
+    );
+  };
+
+  const handlePageChange = (e, field) => {
+    setPageData((prev) => ({
+      ...prev,
+      [field]: Number(e.target.value),
+    }));
+  };
+
+  const handlePageIncrement = () => {
+    setPageData((prev) =>
+      prev.page < prev.pages ? { ...prev, page: prev.page + 1 } : prev
+    );
+  };
+
+  const handlePageDecrement = () => {
+    setPageData((prev) =>
+      prev.page > 1 ? { ...prev, page: prev.page - 1 } : prev
+    );
+  };
+
+  const handleCheckboxChange = (id) => {
+    setSelectedRows((prev) =>
+      prev.includes(id) ? prev.filter((rowId) => rowId !== id) : [...prev, id]
+    );
+  };
+
+  const handleSearch = (type, query) => {
+    setSearch({ type, query });
+  };
+
+  const handleFilter = (type, query) => {
+    setFilter({ type, query });
+  };
+
   useEffect(() => {
     fetchContacts();
-  }, [page, perPage, search]);
+  }, [pageData.page, pageData.perPage, search, filter]);
 
   const fetchContacts = async () => {
     setLoading(true);
-
     try {
-      // const response = await API.get(`/app/v1/contacts`, {
-      //   params: {
-      //     name: search.name,
-      //     email: search.email,
-      //     phone: search.phone,
-      //     filterBy: filter.filterBy,
-      //     page,
-      //     perPage,
-      //   },
-      // });
-      const response = await API.get(
-        `/app/v1/contacts?page=${page}&perPage=${perPage}`
-      );
+      const query = getQuery();
+      console.log(query);
+      const response = await API.get(query);
+
       if (response.status === 200) {
-        setContacts(response.data.contacts);
-        // setTotalRecords(response.data.totalRecords);
+        const data = response.data.data.contacts;
+        setPageData((prev) => ({
+          ...prev,
+          page: data.page,
+          perPage: data.perPage,
+          pages: data.pages,
+          total: data.total,
+          docs: data.docs,
+        }));
       }
     } catch (error) {
       console.error("Error fetching contacts:", error.message);
       toast.error(error.message);
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   };
+
   return (
     <div>
-      <Header />
-      <div className="contact-controls">
-        <button className="selected-contact">2 Selected</button>
-        <button className="delete-contact"> Delete: 2 </button>
-        <button className="export-contacts">Export selected</button>
-      </div>
-
+      <Header onSearch={handleSearch} onFilter={handleFilter} />;
+      {selectedRows && selectedRows.length > 0 && (
+        <div className="contact-controls">
+          <button className="selected-contact">
+            {selectedRows.length} Selected
+          </button>
+          <button className="delete-contact">
+            Delete: {selectedRows.length}{" "}
+          </button>
+          <button className="export-contacts">Export selected</button>
+        </div>
+      )}
       {loading ? (
         <p>Loading contacts ...</p>
       ) : (
@@ -81,79 +137,62 @@ const Contacts = () => {
             </tr>
           </thead>
           <tbody>
-            {contacts.map((contact, index) => (
-              <tr key={contact._id}>
-                <th>#{index + 1 + (page - 1) * perPage}</th>
-                <th>{contact.name}</th>
-                <th>
-                  <MdOutlineEmail /> {contact.email}
-                </th>
-                <th>
-                  {contact.gender === "Male" ? (
-                    <MdOutlineMale />
-                  ) : (
-                    <MdOutlineFemale />
-                  )}{" "}
-                  {contact.gender}
-                </th>
-                <th>
-                  <MdPhoneAndroid /> {contact.phone}
-                </th>
-                <th>
-                  <Link to={`/contact-details/${contact._id}`}>See detail</Link>
-                </th>
-              </tr>
-            ))}
+            {pageData.docs.map((contact, index) => {
+              const isSelected = selectedRows.includes(contact._id);
+
+              return (
+                <tr
+                  key={contact._id}
+                  onMouseEnter={() => setHoveredRow(index)}
+                  onMouseLeave={() => setHoveredRow(null)}
+                >
+                  <th>
+                    {isSelected || hoveredRow === index ? (
+                      <input
+                        type="checkbox"
+                        checked={isSelected}
+                        onChange={() => handleCheckboxChange(contact._id)}
+                      />
+                    ) : (
+                      `#${index + 1 + (pageData.page - 1) * pageData.perPage}`
+                    )}
+                  </th>
+                  <th>{contact.name}</th>
+                  <th>
+                    <MdOutlineEmail /> {contact.email}
+                  </th>
+                  <th>
+                    {contact.gender === "Male" ? (
+                      <MdOutlineMale />
+                    ) : (
+                      <MdOutlineFemale />
+                    )}
+                    {contact.gender}
+                  </th>
+                  <th>
+                    <MdPhoneAndroid /> {contact.phone}
+                  </th>
+                  <th>
+                    <Link to={`/contact-details/${contact._id}`}>
+                      See detail
+                    </Link>
+                  </th>
+                </tr>
+              );
+            })}
           </tbody>
-          {/* <tr>
-              <th>#1</th>
-              <th>Arun Kumar</th>
-              <th>
-                <MdOutlineEmail />
-                arun.devpro@gmail.com
-              </th>
-              <th>
-                <MdOutlineFemale /> Female
-              </th>
-              <th>
-                <MdPhoneAndroid />
-                +91-7004486562
-              </th>
-              <th>
-                <Link to="/contact-details/1">See detail</Link>
-              </th>
-            </tr>
-            <tr>
-              <th>#1</th>
-              <th>Arun Kumar</th>
-              <th>arun.devpro@gmail.com</th>
-              <th>
-                <MdOutlineMale />
-                Male
-              </th>
-              <th>+91-7004486562</th>
-              <th>
-                <Link to="/contact-details/2">See detail</Link>
-              </th>
-            </tr>
-            <tr>
-              <th>#1</th>
-              <th>Arun Kumar</th>
-              <th>arun.devpro@gmail.com</th>
-              <th>+91-7004486562</th>
-              <th>
-                <Link to="/contact-details">See detail</Link>
-              </th>
-            </tr> */}
         </table>
       )}
       <div className="contact-footer">
         <div className="page-wrapper">
           <div>
             <span>Page</span>
-
-            <select name="" id="">
-              {Array.from({ length: 15 }, (_, i) => (
+            <select
+              name="page"
+              value={pageData.page}
+              onChange={(e) => handlePageChange(e, "page")}
+            >
+              {Array.from({ length: pageData.pages }, (_, i) => (
                 <option key={i + 1} value={i + 1}>
                   {i + 1}
                 </option>
@@ -162,32 +201,35 @@ const Contacts = () => {
           </div>
           <div>
             <span>Per Page</span>
-
-            <select name="" id="">
-              <option key="10" value={10}>
-                10
-              </option>
-              <option key="20" value={20}>
-                20
-              </option>
-              <option key="50" value={50}>
-                50
-              </option>
-              <option key="100" value={100}>
-                100
-              </option>
+            <select
+              name="perPage"
+              value={pageData.perPage}
+              onChange={(e) => handlePageChange(e, "perPage")}
+            >
+              {perPageOptions.map((option) => (
+                <option key={option} value={option}>
+                  {option}
+                </option>
+              ))}
             </select>
           </div>
         </div>
         <p>
-          Total Records: <span>1245</span>
+          Total Records: <span>{pageData.total}</span>
         </p>
-
         <div>
-          <button className="btn btn-prev">
+          <button
+            className="btn btn-prev"
+            onClick={handlePageDecrement}
+            disabled={pageData.page === 1}
+          >
             <FaChevronLeft />
           </button>
-          <button className="btn btn-next">
+          <button
+            className="btn btn-next"
+            onClick={handlePageIncrement}
+            disabled={pageData.page === pageData.pages}
+          >
             <FaChevronRight />
           </button>
         </div>

@@ -1,19 +1,25 @@
-const QueryBuilder = (endpoint, page, perPage) => {
+const QueryBuilder = (endpoint, page, perPage, filters = {}) => {
   let query = endpoint;
   if (page) {
-    query += `&page=${page}`;
+    query += `page=${page}`;
   }
 
   if (perPage) {
     query += `&perPage=${perPage}`;
   }
 
-  if (selectedMonth) {
-    query += `&month=${selectedMonth}`;
+  for (const [key, value] of Object.entries(filters)) {
+    if (value) {
+      query += `&${key}=${encodeURIComponent(value)}`;
+    }
   }
-  if (searchText) {
-    query += `&search=${encodeURIComponent(searchText)}`;
-  }
+
+  // if (selectedMonth) {
+  //   query += `&month=${selectedMonth}`;
+  // }
+  // if (searchText) {
+  //   query += `&search=${encodeURIComponent(searchText)}`;
+  // }
 
   return query;
 };
