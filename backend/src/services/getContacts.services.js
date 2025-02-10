@@ -22,22 +22,19 @@ class GetContacts {
     return this;
   }
 
-  async getContactsCount() {
+  async getContactCount() {
     const query = { deleted: false };
-
-    if (this.queryStr.name)
-      query.name = { $regex: this.queryStr.name, $options: "i" };
 
     if (this.queryStr.email)
       query.email = { $regex: this.queryStr.email, $options: "i" };
 
+    if (this.queryStr.name)
+      query.name = { $regex: this.queryStr.name, $options: "i" };
+
     if (this.queryStr.phone)
       query.phone = { $regex: this.queryStr.phone, $options: "i" };
 
-    const count = await this.query.countDocuments({
-      ...this.queryStr,
-      ...query,
-    });
+    const count = await this.query.countDocuments(query);
 
     return count;
   }

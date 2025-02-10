@@ -6,9 +6,10 @@ import {
   modifyContact,
   createContact,
   deleteMultipleContact,
+  getContactDetails,
 } from "../controllers/contacts.controllers.js";
 import { validateUserInput } from "../middlewares/validateUserInput.middleware.js";
-import uploads from "../configs/multer.configs.js";
+import uploads from "../../configs/multer.configs.js";
 import handleMulterError from "../middlewares/multerError.middleware.js";
 const router = express.Router();
 

@@ -1,6 +1,6 @@
 import CatchAsyncError from "../utils/catchAsyncError.utils.js";
 import SendApiResponse from "../utils/responseHandler.utils.js";
-import Contact from "../models/contact.models.js";
+ import Contact from "../models/contact.models.js";
 import ErrorHandler from "../utils/errorHandler.utils.js";
 import GetContacts from "../services/getContacts.services.js";
 import { ContactsUploader } from "../utils/contactsUploader.utils.js";
@@ -15,14 +15,17 @@ export const getContacts = CatchAsyncError(async (req, res, next) => {
   if (perPage) perPage = parseInt(perPage);
 
   const limit = req.query.perPage || 10;
-  console.log(req.query);
+  // console.log(req.query);
 
   const contactsQuery = new GetContacts(Contact.find(), req.query)
     .search()
     .sort()
     .paginate();
 
-  const total = new GetContacts(Contact.find(), req.query).getContactsCount();
+  const total = await new GetContacts(
+    Contact.find(),
+    req.query
+  ).getContactCount();
 
   const records = {
     docs: [],
@@ -65,7 +68,7 @@ export const deleteContact = CatchAsyncError(
     const contact = await Contact.findById(id).session(session);
     if (!contact) return next(ErrorHandler(res, 404, "Contact not found."));
 
-    await contact.deleteOne({ session });
+    await Contact.deleteOne({ _id: id }, { session });
 
     SendApiResponse(res, 200, "Contact deleted successfully");
   },
@@ -106,8 +109,15 @@ export const deleteMultipleContact = CatchAsyncError(async (req, res, next) => {
 });
 
 export const getContactDetails = CatchAsyncError(async (req, res, next) => {
-  const contact = await Contact.findById(req.params.id);
-  if (!contact) return ErrorHandler(res, 400, "Contact details not found.");
+  const { id } = req.query; // Extract ID from query parameters
 
-  SendApiResponse(res, 200, "Here is contact details", { details: contact });
+  if (!id) return ErrorHandler(res, 400, "Missing contact ID");
+
+  const contact = await Contact.findById(id).select("-__v").lean();
+
+  if (!contact) return ErrorHandler(res, 404, "Contact details not found.");
+
+  SendApiResponse(res, 200, "Here are the contact details", {
+    details: contact,
+  });
 });
