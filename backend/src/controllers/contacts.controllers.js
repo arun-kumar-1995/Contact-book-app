@@ -106,12 +106,11 @@ export const deleteMultipleContact = CatchAsyncError(async (req, res, next) => {
 })
 
 export const getContactDetails = CatchAsyncError(async (req, res, next) => {
-  const { id } = req.query // Extract ID from query parameters
-
+  const { id } = req.params
+  console.log(id, typeof id)
   if (!id) return ErrorHandler(res, 400, 'Missing contact ID')
 
-  const contact = await Contact.findById(id).select('-__v').lean()
-
+  const contact = await Contact.findById(id)
   if (!contact) return ErrorHandler(res, 404, 'Contact details not found.')
 
   SendApiResponse(res, 200, 'Here are the contact details', {

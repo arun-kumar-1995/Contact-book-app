@@ -14,13 +14,6 @@ const QueryBuilder = (endpoint, page, perPage, filters = {}) => {
     }
   }
 
-  // if (selectedMonth) {
-  //   query += `&month=${selectedMonth}`;
-  // }
-  // if (searchText) {
-  //   query += `&search=${encodeURIComponent(searchText)}`;
-  // }
-
   return query;
 };
 
