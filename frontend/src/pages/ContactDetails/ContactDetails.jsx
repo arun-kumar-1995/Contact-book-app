@@ -47,7 +47,7 @@ const ContactDetails = () => {
       setIsLoading(false);
     }
   };
-  console.log(formData);
+
   const handleEdit = async () => {
     try {
       const response = await API.put(

@@ -2,9 +2,10 @@ import { useState } from "react";
 import "./Header.css";
 import { MdAdd } from "react-icons/md";
 
-const Header = ({ onSearch, onFilter }) => {
+const Header = ({ onSearch, onFilter, onOpen }) => {
   const [search, setSearch] = useState({ query: "", type: "name" });
   const [filter, setFilter] = useState({ query: "", type: "filterBy" });
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   // Handle input field changes
   const handleSearchChange = (e) => {
@@ -26,6 +27,11 @@ const Header = ({ onSearch, onFilter }) => {
     if (e.key === "Enter") {
       onSearch(search.type, search.query);
     }
+  };
+
+  const handleModal = () => {
+    setIsModalOpen(true);
+    onOpen(true);
   };
 
   return (
@@ -52,7 +58,7 @@ const Header = ({ onSearch, onFilter }) => {
       </div>
 
       <div>
-        <button type="button" className="btn add-contact">
+        <button type="button" className="btn add-contact" onClick={handleModal}>
           <span>
             <MdAdd />
           </span>

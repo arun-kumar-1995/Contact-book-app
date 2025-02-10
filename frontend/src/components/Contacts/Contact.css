@@ -160,3 +160,82 @@ table a {
   background: #ccc;
   cursor: not-allowed;
 }
+
+/* modal */
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.4);
+  z-index: 999;
+}
+.modal-wrapper {
+  position: absolute;
+  top: 50%;
+  left: 60%;
+  transform: translate(-60%, -50%);
+  width: 34rem;
+  padding: 2rem;
+  border-radius: 0.2rem;
+  background-color: #fff;
+}
+
+.modal-wrapper h2 {
+  font-size: 20px;
+  margin-top: 1.8em;
+  color: var(--clr-dark);
+}
+
+.modal-container {
+  margin-top: 2em;
+}
+.modal-container .form-group {
+  margin-bottom: 1.4em;
+}
+.modal-container label {
+  color: var(--clr-danger);
+  font-size: 1.4rem;
+  font-weight: 600;
+  text-align: left;
+  display: block;
+}
+.modal-container input {
+  display: block;
+  width: 100%;
+  border: 1px solid #d9d9dd;
+  padding: 0.8rem;
+  border-radius: 0.2rem;
+  margin-top: 0.4em;
+  font-size: 1.2rem;
+}
+.modal-container input:focus {
+  border: 1px solid var(--clr-primary);
+}
+.btn-submit {
+  width: 100%;
+  display: block;
+  background-color: var(--clr-success);
+  color: var(--clr-light);
+  padding: 1rem 1.6rem;
+  margin-top: 2em;
+  font-size: 1.4rem;
+}
+
+button.close-modal {
+  position: absolute;
+  font-size: 2.8rem;
+  color: #545454;
+  right: 0;
+  top: 0;
+  padding: 1.2rem;
+}
+
+.modal-container select {
+  width: 100%;
+  padding: 0.8rem;
+  font-size: 1.2rem;
+  margin-top: 0.4em;
+}

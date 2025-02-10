@@ -12,6 +12,8 @@ import {
 import Header from "../Header/Header";
 import "./Contact.css";
 import QueryBuilder from "../../utils/queryBuilder";
+import { useNavigate } from "react-router-dom";
+import { MdClose } from "react-icons/md";
 
 const perPageOptions = [10, 20, 50, 100];
 
@@ -29,8 +31,21 @@ const Contacts = () => {
   const [selectedRows, setSelectedRows] = useState([]);
   const [search, setSearch] = useState({ type: "name", query: "" });
   const [filter, setFilter] = useState({ type: "filterBy", query: "" });
-
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    phone: "",
+    gender: "",
+  });
   const toast = useToast();
+  const navigate = useNavigate();
+
+  // Function to open modal
+  const openModal = () => setIsModalOpen(true);
+
+  // Function to close modal
+  const closeModal = () => setIsModalOpen(false);
 
   const getQuery = () => {
     return QueryBuilder(
@@ -118,18 +133,43 @@ const Contacts = () => {
         }
       );
       if (response.status === 200) {
-        toast.success("Selected contact deleted");
         fetchContacts();
+        setSelectedRows([]);
+        toast.success("Selected contact deleted");
       }
     } catch (err) {
-      console.log(err);
+      toast.error(err?.response?.data?.message || err.message);
+    }
+  };
+  console.log(formData);
+  const handleAddContact = async () => {
+    try {
+      const response = await API.post(
+        `/app/v1/contacts/new-contact`,
+        formData,
+        {
+          headers: { "Content-Type": "application/json" },
+        }
+      );
+
+      if (response.status === 201) {
+        closeModal();
+        fetchContacts();
+        toast.success(response.data.message || "New contact created");
+      }
+    } catch (err) {
       toast.error(err?.response?.data?.message || err.message);
     }
   };
 
   return (
-    <div>
-      <Header onSearch={handleSearch} onFilter={handleFilter} />;
+    <div className="contact-page">
+      <Header
+        onSearch={handleSearch}
+        onFilter={handleFilter}
+        onOpen={setIsModalOpen}
+      />
+      ;
       {selectedRows && selectedRows.length > 0 && (
         <div className="contact-controls">
           <button className="selected-contact">
@@ -253,6 +293,70 @@ const Contacts = () => {
           </button>
         </div>
       </div>
+      {isModalOpen && (
+        <div className="modal-overlay">
+          <div className="modal-wrapper">
+            <button className="close-modal" onClick={closeModal}>
+              <MdClose />
+            </button>
+            <h2>New Contact</h2>
+            <div className="modal-container">
+              <div className="form-group">
+                <label htmlFor="name">Name:</label>
+                <input
+                  type="text"
+                  value={formData.name}
+                  onChange={(e) =>
+                    setFormData({ ...formData, name: e.target.value })
+                  }
+                />
+              </div>
+              <div className="form-group">
+                <label htmlFor="email">Email:</label>
+                <input
+                  type="text"
+                  value={formData.email}
+                  onChange={(e) =>
+                    setFormData({ ...formData, email: e.target.value })
+                  }
+                />
+              </div>
+              <div className="form-group">
+                <label htmlFor="phone">Phone:</label>
+                <input
+                  type="text"
+                  value={formData.phone}
+                  onChange={(e) =>
+                    setFormData({ ...formData, phone: e.target.value })
+                  }
+                />
+              </div>
+              <div className="form-group">
+                <label htmlFor="gender">Gender:</label>
+                <select
+                  name="gender"
+                  value={formData.gender}
+                  onChange={(e) =>
+                    setFormData({ ...formData, gender: e.target.value })
+                  }
+                >
+                  <option value="">Select gender</option>
+                  <option value="Male">Male</option>
+                  <option value="Female">Female</option>
+                  <option value="Other">Other</option>
+                </select>
+              </div>
+            </div>
+            <button
+              type="button"
+              className="btn btn-submit"
+              onClick={handleAddContact}
+            >
+              Submit
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

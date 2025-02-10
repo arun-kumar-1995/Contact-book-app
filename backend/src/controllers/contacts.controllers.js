@@ -48,11 +48,16 @@ export const uploadContacts = CatchAsyncError(async (req, res, next) => {
 
 export const createContact = CatchAsyncError(
   async (req, res, next, session) => {
-    const { name, email, phone } = req.body
-    const contact = await Contact.create([{ name, email, phone }], { session })
+    const { name, email, phone, gender } = req.body
 
-    // send resonse
-    SendApiResponse(res, 201, 'Contact created successfully', { contact })
+    const contact = await Contact.create(
+      [{ name, email, phone, gender }],
+      session ? { session } : {}
+    )
+    if (!contact || contact.length === 0) {
+      return ErrorHandler(res, 500, 'Error creating contact')
+    }
+    SendApiResponse(res, 201, 'Contact created successfully')
   },
   true
 )
