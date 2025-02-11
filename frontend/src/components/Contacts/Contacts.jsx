@@ -15,6 +15,7 @@ import QueryBuilder from "../../utils/queryBuilder";
 import { useNavigate } from "react-router-dom";
 import { MdClose } from "react-icons/md";
 import { csvDownload } from "../../services/ExcelService";
+import handWaiting from "../../assets/waiting_hand.gif";
 
 const perPageOptions = [10, 20, 50, 100];
 
@@ -39,6 +40,20 @@ const Contacts = () => {
     phone: "",
     gender: "",
   });
+  const [isExportModal, setIsExportModal] = useState(false);
+  const fieldOptions = [
+    "_id",
+    "name",
+    "email",
+    "phone",
+    "gender",
+    "createdAt",
+    "updatedAt",
+    "deleted",
+  ];
+
+  const [selectedOptions, setSelectedOptions] = useState([]);
+
   const toast = useToast();
   const navigate = useNavigate();
 
@@ -47,6 +62,15 @@ const Contacts = () => {
 
   // Function to close modal
   const closeModal = () => setIsModalOpen(false);
+  const closeExportModal = () => setIsExportModal(false);
+
+  const handleChange = (option) => {
+    setSelectedOptions((prev) =>
+      prev.includes(option)
+        ? prev.filter((item) => item !== option)
+        : [...prev, option]
+    );
+  };
 
   const getQuery = () => {
     return QueryBuilder(
@@ -142,7 +166,7 @@ const Contacts = () => {
       toast.error(err?.response?.data?.message || err.message);
     }
   };
-  console.log(formData);
+
   const handleAddContact = async () => {
     try {
       const response = await API.post(
@@ -167,7 +191,7 @@ const Contacts = () => {
     try {
       const response = await API.post(
         `/app/v1/contacts/export-csv`,
-        { contactIds: selectedRows },
+        { contactIds: selectedRows, fields: selectedOptions },
         {
           headers: { "Content-Type": "application/json" },
         }
@@ -178,6 +202,7 @@ const Contacts = () => {
         console.log(data);
         csvDownload(data);
         toast.success(response.data.message || "File exported");
+        setIsExportModal(false);
       }
     } catch (err) {
       toast.error(err?.response?.data?.message || err.message);
@@ -200,13 +225,20 @@ const Contacts = () => {
           <button className="delete-contact" onClick={handleBulkDelete}>
             Delete: {selectedRows.length}
           </button>
-          <button className="export-contacts" onClick={handleFileExport}>
+          <button
+            className="export-contacts"
+            onClick={() => setIsExportModal(true)}
+          >
             Export selected
           </button>
         </div>
       )}
       {loading ? (
-        <p>Loading contacts ...</p>
+        <div className="loader-modal">
+          <div className="loader-container">
+            <img src={handWaiting} alt="waiting" />
+          </div>
+        </div>
       ) : (
         <table>
           <thead>
@@ -377,6 +409,37 @@ const Contacts = () => {
               onClick={handleAddContact}
             >
               Submit
+            </button>
+          </div>
+        </div>
+      )}
+      {isExportModal && (
+        <div className="modal-overlay">
+          <div className="modal-wrapper">
+            <button className="close-modal" onClick={closeExportModal}>
+              <MdClose />
+            </button>
+            <h2>Select Fields</h2>
+            <div className="modal-container export-modal-container">
+              {fieldOptions.map((option) => (
+                <>
+                  <input
+                    type="checkbox"
+                    checked={selectedOptions.includes(option)}
+                    onChange={() => handleChange(option)}
+                  />
+                  <label key={option} className="option-item">
+                    {option}
+                  </label>
+                </>
+              ))}
+            </div>
+            <button
+              type="button"
+              className="btn btn-submit"
+              onClick={handleFileExport}
+            >
+              Apply Export
             </button>
           </div>
         </div>

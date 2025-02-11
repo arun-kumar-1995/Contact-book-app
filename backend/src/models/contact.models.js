@@ -1,9 +1,9 @@
-import mongoose from "mongoose";
+import mongoose from 'mongoose'
 const schema = new mongoose.Schema(
   {
     name: {
       type: String,
-      required: [true, "Name is required"],
+      required: [true, 'Name is required'],
       trim: true,
       lowercase: true,
       minLength: 3,
@@ -12,10 +12,12 @@ const schema = new mongoose.Schema(
       type: String,
       trim: true,
       lowercase: true,
+      unique: [true, 'This email already exists'],
     },
     phone: {
       type: String,
-      required: [true, "Phone No is required"],
+      required: [true, 'Phone No is required'],
+      unique: [true, 'This phone number already exists'],
     },
     gender: {
       type: String,
@@ -26,8 +28,8 @@ const schema = new mongoose.Schema(
     },
   },
   { timestamps: true }
-);
+)
 
-const Contact = mongoose.model("Contact", schema);
+const Contact = mongoose.model('Contact', schema)
 
-export default Contact;
+export default Contact

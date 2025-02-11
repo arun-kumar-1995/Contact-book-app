@@ -7,7 +7,8 @@ import { MdClose } from "react-icons/md";
 import { useParams, useNavigate } from "react-router-dom";
 import { useToast } from "../../contexts/ToastContext";
 import { API } from "../../axios/apiWrapper";
-
+import userImg from "../../assets/user.png";
+import ContactService from "../../services/ContactService";
 const ContactDetails = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [contactDetails, setContactDetails] = useState(null);
@@ -31,16 +32,13 @@ const ContactDetails = () => {
   const getContactDetails = async () => {
     setIsLoading(true);
     try {
-      const response = await API.get(`/app/v1/contacts/contact-details/${id}`);
-      if (response.status === 200) {
-        const data = response.data.data?.details;
-        setContactDetails(data);
-        setFormData({
-          name: data?.name || "",
-          email: data?.email || "",
-          phone: data?.phone || "",
-        });
-      }
+      const data = await ContactService.getContactDetails(id);
+      setContactDetails(data);
+      setFormData({
+        name: data?.name || "",
+        email: data?.email || "",
+        phone: data?.phone || "",
+      });
     } catch (err) {
       toast.error(err.message);
     } finally {
@@ -50,19 +48,10 @@ const ContactDetails = () => {
 
   const handleEdit = async () => {
     try {
-      const response = await API.put(
-        `/app/v1/contacts/edit-contact/${id}`,
-        formData,
-        {
-          headers: { "Content-Type": "application/json" },
-        }
-      );
-      if (response.status === 200) {
-        toast.success("Contact updated successfully!");
-        setContactDetails(response.data.data);
-        closeModal();
-        getContactDetails();
-      }
+      const updatedContact = await ContactService.updateContact(id, formData);
+      toast.success("Contact updated successfully!");
+      setContactDetails(updatedContact);
+      setIsModalOpen(false);
     } catch (err) {
       toast.error(err?.response?.data?.message || err.message);
     }
@@ -72,14 +61,13 @@ const ContactDetails = () => {
     if (!window.confirm("Are you sure you want to delete this contact?"))
       return;
     try {
-      await API.delete(`/app/v1/contacts/delete-contact/${id}`);
+      await ContactService.deleteContact(id);
       toast.success("Contact deleted successfully!");
       navigate("/");
     } catch (err) {
       toast.error(err.message);
     }
   };
-  console.log(formData);
 
   return (
     <center>
@@ -89,10 +77,10 @@ const ContactDetails = () => {
 
       {loading ? (
         <p>Loading...</p>
-      ) : contactDetails ? ( // Fixed incorrect JSX wrapping
+      ) : contactDetails ? (
         <>
           <div className="contact-card">
-            <img src="https://via.placeholder.com/100" alt="User Photo" />
+            <img src={userImg} alt="User Photo" />
             <h2>{contactDetails?.name}</h2>
             <p>
               <span>Email:</span> {contactDetails?.email}

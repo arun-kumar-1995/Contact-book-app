@@ -65,6 +65,18 @@ export const createContact = CatchAsyncError(
   async (req, res, next, session) => {
     const { name, email, phone, gender } = req.body
 
+    const existingContact = await Contact.findOne({
+      $or: [{ email }, { phone }],
+    })
+
+    if (existingContact) {
+      return ErrorHandler(
+        res,
+        400,
+        'Contact with this email or phone already exists'
+      )
+    }
+
     const contact = await Contact.create(
       [{ name, email, phone, gender }],
       session ? { session } : {}
@@ -139,7 +151,8 @@ export const getContactDetails = CatchAsyncError(async (req, res, next) => {
 })
 
 export const exportCsv = CatchAsyncError(async (req, res, next) => {
-  const { contactIds } = req.body
+  const { contactIds, fields } = req.body
+  console.log(contactIds, fields)
 
   if (!contactIds || !Array.isArray(contactIds) || contactIds.length === 0) {
     return ErrorHandler(res, 400, 'Invalid contact IDs')
@@ -151,6 +164,7 @@ export const exportCsv = CatchAsyncError(async (req, res, next) => {
     return ErrorHandler(res, 404, 'No contacts found')
   }
 
-  const csvFields = getCsvFields(res, Contact.schema)
-  await downloadCSV(res, contacts, csvFields)
+  await downloadCSV(res, contacts, fields)
+  // const csvFields = getCsvFields(res, Contact.schema)
+  // await downloadCSV(res, contacts, csvFields)
 })
