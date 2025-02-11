@@ -7,6 +7,7 @@ import {
   createContact,
   deleteMultipleContact,
   getContactDetails,
+  exportCsv
 } from '../controllers/contacts.controllers.js'
 import { validateUserInput } from '../middlewares/validateUserInput.middleware.js'
 import uploads from '../../configs/multer.configs.js'
@@ -27,4 +28,5 @@ router.route('/delete-contacts').post(deleteMultipleContact)
 
 router.route('/contact-details/:id').get(getContactDetails)
 
+router.route("/export-csv").post(exportCsv);
 export default router

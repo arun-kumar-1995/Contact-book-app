@@ -4,6 +4,8 @@ import Contact from '../models/contact.models.js'
 import ErrorHandler from '../utils/errorHandler.utils.js'
 import GetContacts from '../services/getContacts.services.js'
 import { ContactsUploader } from '../utils/contactsUploader.utils.js'
+import { downloadCSV } from '../utils/downloadCsv.utils.js'
+import { getCsvFields } from '../utils/getCscFields.utils.js'
 
 const DEFAULT_PAGE = 1
 const DEFAULT_PER_PAGE = 10
@@ -121,4 +123,19 @@ export const getContactDetails = CatchAsyncError(async (req, res, next) => {
   SendApiResponse(res, 200, 'Here are the contact details', {
     details: contact,
   })
+})
+
+export const exportCsv = CatchAsyncError(async (req, res, next) => {
+  const { contactIds } = req.body
+  if (!contactIds || !Array.isArray(contactIds) || contactIds.length === 0) {
+    return ErrorHandler(res, 400, 'Invalid contact IDs')
+  }
+
+  const contacts = await Contact.find({ _id: { $in: contactIds } }).lean()
+  if (contacts.length === 0) {
+    return ErrorHandler(res, 404, 'No contacts found')
+  }
+
+  const csvFields = getCsvFields(res, Contact.schema)
+  await downloadCSV(res, contacts, csvFields)
 })
