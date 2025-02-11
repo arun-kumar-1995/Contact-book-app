@@ -37,15 +37,13 @@ const UploadContact = () => {
     });
   };
 
-  // useEffect(() => {
-  //   if (rejectedRows.length === 0 && parsedData.length > 0) {
-  //     UploadCsvFile(parsedData);
-  //   }
-  // }, [rejectedRows, parsedData]);
-
   const handleCsvUpload = () => {
+    if (!fileName) toast.error("Select file to upload");
     if (rejectedRows.length === 0 && parsedData.length > 0) {
-      UploadCsvFile(parsedData , toast);
+      UploadCsvFile(parsedData, toast);
+      setFileName("");
+      setParsedData([]);
+      setRejectedRows([]);
     }
   };
 

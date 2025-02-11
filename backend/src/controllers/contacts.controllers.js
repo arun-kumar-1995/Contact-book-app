@@ -3,7 +3,6 @@ import SendApiResponse from '../utils/responseHandler.utils.js'
 import Contact from '../models/contact.models.js'
 import ErrorHandler from '../utils/errorHandler.utils.js'
 import GetContacts from '../services/getContacts.services.js'
-import { ContactsUploader } from '../utils/contactsUploader.utils.js'
 import { downloadCSV } from '../utils/downloadCsv.utils.js'
 import { getCsvFields } from '../utils/getCscFields.utils.js'
 
@@ -47,7 +46,6 @@ export const uploadContacts = CatchAsyncError(async (req, res, next) => {
 
   const contactPromises = contactData.map((contact) => {
     const [name, email, phone, gender] = contact
-
     // Create new contact document
     const newContact = new Contact({
       name,

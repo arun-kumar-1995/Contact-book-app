@@ -66,7 +66,7 @@ export const UploadCsvFile = async (fileRawData, toast) => {
     const response = await API.post(`/app/v1/contacts/uploads`, {
       contacts: fileRawData,
     });
-    if (response.statusCode === 200) {
+    if (response.status === 200) {
       toast.success(response?.data?.message || "Contact uploaded");
     }
   } catch (err) {
