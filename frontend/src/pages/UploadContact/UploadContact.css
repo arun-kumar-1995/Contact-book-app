@@ -1,5 +1,4 @@
 .upload-contact-container {
-  height: 94vh;
   width: 100%;
 }
 
@@ -29,7 +28,7 @@
   margin: 0 auto;
   text-align: center;
   color: #545454;
-  margin-top: 2.8em;
+  margin-top: 2.2em;
 }
 
 .upload-info {
@@ -62,4 +61,61 @@
   font-size: 14px;
   width: 16rem;
   margin: 0 auto;
+}
+
+.caption {
+  margin-top: 2em;
+  font-size: 1.6rem;
+  margin-left: 3.4em;
+  color: var(--clr-dark);
+}
+
+.file-name {
+  font-size: 1.2rem;
+  margin-top: 2em;
+}
+
+.file-error {
+  margin-top: 2em;
+}
+
+.file-error p {
+  text-align: center;
+  font-size: 1.4rem;
+}
+
+button.file-upload {
+  display: block;
+  width: 12rem;
+  margin: 0 auto;
+  background-color: var(--clr-success);
+  font-size: 1.2rem;
+  color: var(--clr-light);
+  padding: 0.8rem 1.2rem;
+  margin-top: 2em;
+}
+
+.upload-page table {
+  width: 90%;
+  margin: 0 auto;
+  font-size: 1.2rem;
+  margin-top: 1.6em;
+  border-collapse: collapse;
+}
+
+.upload-page table th,
+.upload-page table td {
+  border-bottom: 1px solid #ddd;
+  padding: 1rem 1.2rem;
+  font-weight: 400;
+}
+
+.upload-page table th {
+  background-color: var(--clr-dark);
+  color: var(--clr-light);
+  font-weight: 500;
+}
+
+.upload-page table tr {
+  background-color: #f5f5f5;
 }

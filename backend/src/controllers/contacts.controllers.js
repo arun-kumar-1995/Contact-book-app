@@ -42,9 +42,24 @@ export const getContacts = CatchAsyncError(async (req, res, next) => {
 })
 
 export const uploadContacts = CatchAsyncError(async (req, res, next) => {
-  if (!req.file) return ErrorHandler(res, 400, 'No file choosen')
-  const contacts = await ContactsUploader(req.file)
-  await Contact.insertMany(contacts)
+  const { contacts } = req.body
+  const contactData = contacts.slice(1)
+
+  const contactPromises = contactData.map((contact) => {
+    const [name, email, phone, gender] = contact
+
+    // Create new contact document
+    const newContact = new Contact({
+      name,
+      email,
+      phone: phone.toString(),
+      gender,
+    })
+
+    return newContact.save()
+  })
+
+  await Promise.all(contactPromises)
   SendApiResponse(res, 200, 'Contacts uploaded')
 })
 

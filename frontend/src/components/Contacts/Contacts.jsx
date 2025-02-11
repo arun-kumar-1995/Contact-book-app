@@ -14,7 +14,7 @@ import "./Contact.css";
 import QueryBuilder from "../../utils/queryBuilder";
 import { useNavigate } from "react-router-dom";
 import { MdClose } from "react-icons/md";
-import { csvDownload } from "../../utils/csvDownload";
+import { csvDownload } from "../../services/ExcelService";
 
 const perPageOptions = [10, 20, 50, 100];
 
