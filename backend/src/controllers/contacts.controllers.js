@@ -152,7 +152,6 @@ export const getContactDetails = CatchAsyncError(async (req, res, next) => {
 
 export const exportCsv = CatchAsyncError(async (req, res, next) => {
   const { contactIds, fields } = req.body
-  console.log(contactIds, fields)
 
   if (!contactIds || !Array.isArray(contactIds) || contactIds.length === 0) {
     return ErrorHandler(res, 400, 'Invalid contact IDs')

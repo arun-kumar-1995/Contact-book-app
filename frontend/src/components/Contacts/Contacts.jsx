@@ -203,6 +203,7 @@ const Contacts = () => {
         csvDownload(data);
         toast.success(response.data.message || "File exported");
         setIsExportModal(false);
+        setSelectedRows([]);
       }
     } catch (err) {
       toast.error(err?.response?.data?.message || err.message);
