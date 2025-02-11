@@ -14,6 +14,7 @@ import "./Contact.css";
 import QueryBuilder from "../../utils/queryBuilder";
 import { useNavigate } from "react-router-dom";
 import { MdClose } from "react-icons/md";
+import { csvDownload } from "../../utils/csvDownload";
 
 const perPageOptions = [10, 20, 50, 100];
 
@@ -162,6 +163,27 @@ const Contacts = () => {
     }
   };
 
+  const handleFileExport = async () => {
+    try {
+      const response = await API.post(
+        `/app/v1/contacts/export-csv`,
+        { contactIds: selectedRows },
+        {
+          headers: { "Content-Type": "application/json" },
+        }
+      );
+
+      if (response.status === 200) {
+        const data = response.data;
+        console.log(data);
+        csvDownload(data);
+        toast.success(response.data.message || "File exported");
+      }
+    } catch (err) {
+      toast.error(err?.response?.data?.message || err.message);
+    }
+  };
+
   return (
     <div className="contact-page">
       <Header
@@ -178,7 +200,9 @@ const Contacts = () => {
           <button className="delete-contact" onClick={handleBulkDelete}>
             Delete: {selectedRows.length}
           </button>
-          <button className="export-contacts">Export selected</button>
+          <button className="export-contacts" onClick={handleFileExport}>
+            Export selected
+          </button>
         </div>
       )}
       {loading ? (

@@ -7,9 +7,11 @@ export const downloadCSV = async (res, file, fields) => {
     res.setHeader('Content-Type', 'text/csv')
     res.setHeader('Content-Disposition', 'attachment; filename=data.csv')
     const csvData = await parseAsync(file, { fields })
-    SendApiResponse(res, 200, 'Here are the csv data ', {
-      data: csvData,
-    })
+    res.status(200).send(csvData)
+
+    // SendApiResponse(res, 200, 'Here are the csv data ', {
+    //   data: csvData,
+    // })
   } catch (err) {
     console.log(err)
     return ErrorHandler(res, 500, 'Failed to generate CSV')

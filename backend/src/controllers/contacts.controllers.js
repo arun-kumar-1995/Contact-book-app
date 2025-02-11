@@ -127,11 +127,13 @@ export const getContactDetails = CatchAsyncError(async (req, res, next) => {
 
 export const exportCsv = CatchAsyncError(async (req, res, next) => {
   const { contactIds } = req.body
+
   if (!contactIds || !Array.isArray(contactIds) || contactIds.length === 0) {
     return ErrorHandler(res, 400, 'Invalid contact IDs')
   }
 
   const contacts = await Contact.find({ _id: { $in: contactIds } }).lean()
+
   if (contacts.length === 0) {
     return ErrorHandler(res, 404, 'No contacts found')
   }
